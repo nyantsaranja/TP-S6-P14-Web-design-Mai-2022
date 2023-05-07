@@ -7,11 +7,6 @@ export const Login = () => {
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
 
-    function control(value, value2) {
-        // check empty values and show sweetalert2
-
-        return true;
-    }
 
     useEffect(() => {
         if (localStorage.getItem("token") !== null || sessionStorage.getItem("author") !== null) {

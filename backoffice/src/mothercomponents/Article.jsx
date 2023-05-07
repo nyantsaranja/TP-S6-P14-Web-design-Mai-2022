@@ -12,13 +12,11 @@ export const Article = () => {
     const {params} = useParams();
     const paramsArray = params.split("-")
     const id = paramsArray[paramsArray.length - 1]
-    const [article, setArticle] = useState({});
     const [ckData, setCkData] = useState('');
     const summaryRef = useRef(null);
     const subtitleRef = useRef(null);
     const titleRef = useRef(null);
     const [selectedFile, setSelectedFile] = useState(null);
-    const base64Ref = useRef(null);
     const [previewImage, setPreviewImage] = useState(null);
     document.getElementById("metadescription").content = "Add an Article"
     useEffect(() => {
