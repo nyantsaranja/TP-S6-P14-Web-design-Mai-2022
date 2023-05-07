@@ -100,6 +100,8 @@ export const AddArticle = () => {
                     titleRef.current.value = '';
                     setCkData('');
                     subtitleRef.current.value = '';
+                    setPreviewImage(null);
+                    document.getElementById("image").value = null;
                 }
             ).catch((error) => {
                     alert(error.response.data.message);
@@ -137,10 +139,7 @@ export const AddArticle = () => {
                             <label htmlFor="exampleInputPassword1" className="form-label">Content</label>
                             <CKEditor
                                 editor={ClassicEditor}
-                                data={"Write the content here!"}
-                                onReady={editor => {
-                                    setCkData('<p>Hello from CKEditor 5!</p>')
-                                }}
+                                data={ckData}
                                 onChange={(event, editor) => {
                                     const data = editor.getData();
                                     console.log({event, editor, data});

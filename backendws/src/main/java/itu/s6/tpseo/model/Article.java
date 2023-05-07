@@ -50,6 +50,8 @@ public class Article extends HasId {
         slug = slug.replace("œ", "oe");
         slug = slug.replace("æ", "ae");
         slug=slug.replace("[^a-z0-9-]", "");
+//        replace space with -
+        slug=slug.replace(" ", "-");
         slug+="-"+this.getId();
         return slug;
     }
