@@ -9,16 +9,18 @@ export const Articles = () => {
     const [articles, setArticles] = useState([]);
     const [page, setPage] = useState(1);
     const [pageNumber, setPageNumber] = useState(1);
+    const [searchQuery, setSearchQuery] = useState("");
     useEffect(() => {
-            getArticles(page)
+            getArticles(page,"")
         }
         , []);
 
-    function getArticles(page) {
-        axios.get(`${BASE_URL}/article?page=${page}`).then((response) => {
+    function getArticles(page,sQ) {
+        axios.get(`${BASE_URL}/article?page=${page}`+sQ).then((response) => {
                 console.log(response.data);
                 setPageNumber(Math.ceil(response.data.data.count / response.data.data.pageSize));
                 setPage(response.data.data.page)
+                setSearchQuery(sQ)
                 setArticles(response.data.data.elements);
             }
         ).catch((error) => {
@@ -33,7 +35,7 @@ export const Articles = () => {
             <div className="container px-4 px-lg-5">
                 <div className="row gx-4 gx-lg-5 justify-content-center">
                     <div className="col-md-10 col-lg-8 col-xl-7">
-                        <SearchForm/>
+                        <SearchForm search={getArticles} page={page}/>
                         {
                             articles.map((article, index) => {
                                     return (
@@ -50,25 +52,29 @@ export const Articles = () => {
                             {
                                 page > 1 &&
                                 <button className="btn btn-primary text-uppercase" onClick={() => {
-                                    getArticles(page - 1)
+                                    getArticles(page - 1,searchQuery)
                                 }}>← Newer Posts</button>
                             }
                             {/*buttons with number based on pagenumber*/}
                             {
+                                pageNumber> 1 ?
                                 [...Array(pageNumber).keys()].map((number, index) => {
                                         return (
                                             <button key={index} className="btn btn-primary text-uppercase"
                                                     onClick={() => {
-                                                        getArticles(number + 1)
+                                                        getArticles(number + 1,searchQuery)
                                                     }}>{number + 1}</button>
                                         )
                                     }
-                                )
+                                ): <button className="btn btn-primary text-uppercase"
+                                                    onClick={() => {
+                                                        getArticles(1,searchQuery)
+                                                    }}>{1}</button>
                             }
                             {
                                 page < pageNumber &&
                                 <button className="btn btn-primary text-uppercase" onClick={() => {
-                                    getArticles(page + 1)
+                                    getArticles(page + 1,searchQuery)
                                 }}>Older Posts →</button>
                             }
                         </div>

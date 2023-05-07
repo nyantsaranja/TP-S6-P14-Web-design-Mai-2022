@@ -2,7 +2,7 @@ import {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import {BASE_URL} from "../../service/Api-Call";
 
-export const SearchForm = () => {
+export const SearchForm = ({search,page}) => {
     const [authors, setAuthors] = useState([]);
     const titleRef = useRef(null);
     const subtitleRef = useRef(null);
@@ -21,8 +21,24 @@ export const SearchForm = () => {
 
     }, []);
 
-    function search() {
-        
+    function s() {
+        let query= "";
+        if(titleRef.current.value !== ""){
+            query += "&ilike_title="+titleRef.current.value;
+        }
+        if(subtitleRef.current.value !== ""){
+            query += "&ilike_subtitle="+subtitleRef.current.value;
+        }
+        if(authorRef.current.value !== ""){
+            query += "&author.id="+authorRef.current.value;
+        }
+        if(minDateRef.current.value !== ""){
+            query += "&min_publicationDate="+minDateRef.current.value;
+        }
+        if(maxDateRef.current.value !== ""){
+            query += "&max_publicationDate="+maxDateRef.current.value;
+        }
+        search(page,query);
     }
 
     return (
@@ -42,7 +58,7 @@ export const SearchForm = () => {
                     <div className="col-md-6 mb-3">
                         <label htmlFor="authorSelect" className="form-label">Author</label>
                         <select ref={authorRef} className="form-select" id="authorSelect">
-                            <option selected>Choose...</option>
+                            <option defaultValue={true} value={""}>Choose...</option>
                             {
                                 authors.map((author, index) => {
                                     return (
@@ -64,7 +80,7 @@ export const SearchForm = () => {
                 {/*    button search*/}
                 <div className="row">
                     <div className="col-md-12 mb-3">
-                        <button type="button" className="btn btn-primary" onClick={search}>Search</button>
+                        <button type="button" className="btn btn-primary" onClick={s}>Search</button>
                     </div>
                 </div>
             </div>

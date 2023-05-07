@@ -53,6 +53,10 @@ public abstract class CrudService<E, R extends JpaRepository<E, Long>> implement
             } else if (op.operator == SearchOperator.or) {
                 continue;
             } else {
+                if(op.operator == SearchOperator.like)
+                    val = "%"+val+"%";
+                else if(op.operator == SearchOperator.ilike)
+                    val = "%"+val+"%".toLowerCase();
                 params.add(val);
             }
             query.append(String.format(" and u.%s %s %s", op.field, op.operator.value, index));
