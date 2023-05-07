@@ -9,7 +9,8 @@ function App() {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Articles/>}></Route>
-                <Route path="/article/:name" element={<Article/>}></Route>
+                <Route path="/blog-ai/articles" element={<Articles/>}></Route>
+                <Route path="/blog-ai/article/:params" element={<Article/>}></Route>
             </Routes>
         </BrowserRouter>
     );
