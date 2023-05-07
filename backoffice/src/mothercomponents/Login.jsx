@@ -1,4 +1,4 @@
-import {useRef} from "react";
+import {useEffect, useRef} from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
 import {BASE_URL} from "../service/Api-Call";
@@ -12,6 +12,16 @@ export const Login = () => {
 
         return true;
     }
+
+    useEffect(() => {
+        if (localStorage.getItem("token") !== null || sessionStorage.getItem("author") !== null) {
+            sessionStorage.removeItem("author");
+            localStorage.removeItem("token");
+            // reload page
+            window.location.reload();
+        }
+    }, []);
+
 
     function login() {
         let email = emailRef.current.value;
@@ -30,7 +40,7 @@ export const Login = () => {
             password: password
         }
         axios.post(`${BASE_URL}/author/login`, obj).then((response) => {
-                let authorId=response.data.data.entity.id;
+                let authorId = response.data.data.entity.id;
                 console.log(authorId)
                 sessionStorage.setItem("author", authorId)
                 localStorage.setItem("token", response.data.data.token)
@@ -70,7 +80,7 @@ export const Login = () => {
 
                                 <input ref={emailRef} type="email" className="form-control"
                                        placeholder="name@address.com"
-                                       />
+                                />
 
                             </div>
 
@@ -89,7 +99,7 @@ export const Login = () => {
 
                                     <input ref={passwordRef} className="form-control" type="password"
                                            placeholder="Enter your password"
-                                           />
+                                    />
 
                                     <span className="input-group-text">
                 </span>
@@ -97,7 +107,7 @@ export const Login = () => {
                                 </div>
                             </div>
                             <button type="button" onClick={login} className="btn btn-lg w-100 btn-primary mb-3"
-                                    >
+                            >
                                 Sign in
                             </button>
 
