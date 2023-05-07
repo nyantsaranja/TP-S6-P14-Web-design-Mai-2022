@@ -5,6 +5,7 @@ import axios from "axios";
 import {BASE_URL, CONFIG} from "../service/Api-Call";
 import Swal from "sweetalert2";
 import {formatDate, getAuthorId} from "../service/Utility";
+import {Header} from "./Header";
 
 export const AddArticle = () => {
     const [ckData, setCkData] = useState('');
@@ -14,6 +15,7 @@ export const AddArticle = () => {
     const [selectedFile, setSelectedFile] = useState(null);
     const base64Ref = useRef(null);
     const [previewImage, setPreviewImage] = useState(null);
+    document.getElementById("metadescription").content = "Add an Article"
 
     const fileSelectedHandler = event => {
         const file = event.target.files[0];
@@ -56,26 +58,24 @@ export const AddArticle = () => {
         let bs64 = null;
         img.onload = () => {
             // calculate new dimensions while maintaining aspect ratio
-            let width = img.width;
-            let height = img.height;
-            let ratio = 1;
+            // calculate new dimensions while maintaining aspect ratio
+            const width = img.width;
+            const height = img.height;
 
-            if (width > 300 || height > 300) {
-                // calculate ratio to fit within 200x200 bounds
-                ratio = Math.min(300 / width, 300 / height);
-                width *= ratio;
-                height *= ratio;
-            }
 
-            // set canvas dimensions to match image dimensions
+            // create a canvas element to draw the resized image
+            const canvas = document.createElement('canvas');
             canvas.width = width;
             canvas.height = height;
 
-            // draw image on canvas
-            ctx.drawImage(img, 0, 0, width, height);
+            // draw the resized image onto the canvas
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height, 0, 0, width, height);
 
-            // get optimized base64 image
-            bs64 = canvas.toDataURL('image/jpeg', 0.8);
+            // get the Base64-encoded string of the canvas image with maximum quality
+            const bs64 = canvas.toDataURL('image/jpeg', 0.7);
+
+
             // console.log(base64);
             const article = {
                 summary: summaryRef.current.value,
@@ -89,7 +89,7 @@ export const AddArticle = () => {
                 publicationDate: new Date()
             }
             console.log(article);
-            axios.post(`${BASE_URL}/article`, article,CONFIG).then((response) => {
+            axios.post(`${BASE_URL}/article`, article, CONFIG).then((response) => {
                     console.log(response.data);
                     Swal.fire({
                         icon: 'success',
@@ -113,6 +113,7 @@ export const AddArticle = () => {
 
     return (
         <>
+            <Header pagename={"Add an article"}/>
             <div className="card">
                 <div className="card-body">
 
@@ -136,7 +137,7 @@ export const AddArticle = () => {
                             <label htmlFor="exampleInputPassword1" className="form-label">Content</label>
                             <CKEditor
                                 editor={ClassicEditor}
-                                data="Write the content here!"
+                                data={"Write the content here!"}
                                 onReady={editor => {
                                     setCkData('<p>Hello from CKEditor 5!</p>')
                                 }}

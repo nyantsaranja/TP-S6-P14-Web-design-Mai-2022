@@ -12,7 +12,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Login/>}></Route>
                 <Route path="/ai-blog/articles" element={<Articles/>}></Route>
-                <Route path="/ai-blog/articles/:params" element={<Article/>}></Route>
+                <Route path="/ai-blog/article/:params" element={<Article/>}></Route>
                 <Route path="/ai-blog/add-article" element={<AddArticle/>}></Route>
                 <Route path="/ai-blog/update-article/:id" element={<ModifyArticle/>}></Route>
             </Routes>
