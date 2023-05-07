@@ -1,8 +1,8 @@
-export const ArticleLi = ({id,title,subtitle,publicationDate,content,image,author}) => {
+export const ArticleLi = ({slug,id,title,subtitle,publicationDate,content,image,author}) => {
     return (
         <>
             <div className="post-preview">
-                <a href={"/blog-ai/article/"+title+"-"+id}>
+                <a href={"/blog-ai/article/"+slug}>
                     <h2 className="post-title">{title}</h2>
                     <h3 className="post-subtitle">{subtitle==="" ? "--": subtitle}</h3>
                 </a>

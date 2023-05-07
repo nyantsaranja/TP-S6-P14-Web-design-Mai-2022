@@ -42,7 +42,7 @@ export const Articles = () => {
                                         <ArticleLi key={index} id={article.id} title={article.title}
                                                    subtitle={article.subtitle} content={article.content}
                                                    publicationDate={article.publicationDate} image={article.image}
-                                                   author={article.author}/>
+                                                   author={article.author} slug={article.slug}/>
                                     )
                                 }
                             )
