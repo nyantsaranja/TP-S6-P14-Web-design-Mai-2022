@@ -6,17 +6,25 @@ import axios from "axios";
 
 export const Articles = () => {
     const [articles, setArticles] = useState([]);
+    const [page, setPage] = useState(1);
+    const [pageNumber, setPageNumber] = useState(1);
     useEffect(() => {
-            axios.get(`${BASE_URL}/article`).then((response) => {
+            getArticles(page)
+        }
+        , []);
+
+    function getArticles(page) {
+        axios.get(`${BASE_URL}/article?page=${page}`).then((response) => {
                     console.log(response.data);
+                    setPageNumber(Math.ceil(response.data.data.count / response.data.data.pageSize));
+                    setPage(response.data.data.page)
                     setArticles(response.data.data.elements);
                 }
             ).catch((error) => {
                     console.log(error);
                 }
             );
-        }
-        , []);
+    }
 
     return (
         <>
@@ -27,14 +35,26 @@ export const Articles = () => {
                         {
                             articles.map((article, index) => {
                                     return (
-                                        <ArticleLi key={index} id={article.id} title={article.title} subtitle={article.subtitle} content={article.content} publicationDate={article.publicationDate} image={article.image} author={article.author}/>
+                                        <ArticleLi key={index} id={article.id} title={article.title}
+                                                   subtitle={article.subtitle} content={article.content}
+                                                   publicationDate={article.publicationDate} image={article.image}
+                                                   author={article.author}/>
                                     )
                                 }
                             )
                         }
-                        <div className="d-flex justify-content-end mb-4"><a className="btn btn-primary text-uppercase"
-                                                                            href="src/components#!">Older Posts →</a>
+                        <div className="pagination"
+                             style={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
+                            {
+                                page > 1 &&
+                                <button className="btn btn-primary text-uppercase" onClick={()=>{getArticles(page-1)}}>← Newer Posts</button>
+                            }
+                            {
+                                page < pageNumber &&
+                                <button className="btn btn-primary text-uppercase" onClick={()=>{getArticles(page+1)}}>Older Posts →</button>
+                            }
                         </div>
+                        <br/>
                     </div>
                 </div>
             </div>
