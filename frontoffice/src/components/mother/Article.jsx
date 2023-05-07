@@ -13,7 +13,7 @@ export const Article = () => {
     let articleTitle =  paramsArray.slice(0, paramsArray.length - 1).reduce((acc, curr) => {
         return acc + " " + curr;
     });
-    document.getElementById("pageTitle").innerText =articleTitle
+    document.getElementById("pageTitle").innerText ="Blog AI - "+ articleTitle
     document.getElementById("pageDescription").innerText = "Blog AI - "+articleTitle+" article";
     useEffect(() => {
         axios.get(`${BASE_URL}/article/${id}`).then((response) => {
