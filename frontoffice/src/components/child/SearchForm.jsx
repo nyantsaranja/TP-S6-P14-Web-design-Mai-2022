@@ -3,23 +3,23 @@ import axios from "axios";
 import {BASE_URL} from "../../service/Api-Call";
 
 export const SearchForm = ({search,page}) => {
-    const [authors, setAuthors] = useState([]);
+    // const [authors, setAuthors] = useState([]);
     const titleRef = useRef(null);
     const subtitleRef = useRef(null);
     const authorRef = useRef(null);
     const minDateRef = useRef(null);
     const maxDateRef = useRef(null);
-    useEffect(() => {
-        axios.get(`${BASE_URL}/author`).then((response) => {
-                console.log(response.data);
-                setAuthors(response.data.data.elements);
-            }
-        ).catch((error) => {
-                console.log(error);
-            }
-        );
-
-    }, []);
+    // useEffect(() => {
+    //     axios.get(`${BASE_URL}/author`).then((response) => {
+    //             console.log(response.data);
+    //             setAuthors(response.data.data.elements);
+    //         }
+    //     ).catch((error) => {
+    //             console.log(error);
+    //         }
+    //     );
+    //
+    // }, []);
 
     function s() {
         let query= "";
@@ -59,13 +59,14 @@ export const SearchForm = ({search,page}) => {
                         <label htmlFor="authorSelect" className="form-label">Author</label>
                         <select ref={authorRef} className="form-select" id="authorSelect">
                             <option defaultValue={true} value={""}>Choose...</option>
-                            {
-                                authors.map((author, index) => {
-                                    return (
-                                        <option key={index} value={author.id}>{author.lastname+" "+author.firstname}</option>
-                                    )
-                                })
-                            }
+                            <option value={1}>Ny Antsa Ranja</option>
+                            {/*{*/}
+                            {/*    authors.map((author, index) => {*/}
+                            {/*        return (*/}
+                            {/*            <option key={index} value={author.id}>{author.lastname+" "+author.firstname}</option>*/}
+                            {/*        )*/}
+                            {/*    })*/}
+                            {/*}*/}
                         </select>
                     </div>
                     <div className="col-md-3 mb-3">
