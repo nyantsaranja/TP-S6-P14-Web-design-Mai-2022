@@ -15,15 +15,15 @@ export const Articles = () => {
 
     function getArticles(page) {
         axios.get(`${BASE_URL}/article?page=${page}`).then((response) => {
-                    console.log(response.data);
-                    setPageNumber(Math.ceil(response.data.data.count / response.data.data.pageSize));
-                    setPage(response.data.data.page)
-                    setArticles(response.data.data.elements);
-                }
-            ).catch((error) => {
-                    console.log(error);
-                }
-            );
+                console.log(response.data);
+                setPageNumber(Math.ceil(response.data.data.count / response.data.data.pageSize));
+                setPage(response.data.data.page)
+                setArticles(response.data.data.elements);
+            }
+        ).catch((error) => {
+                console.log(error);
+            }
+        );
     }
 
     return (
@@ -47,11 +47,27 @@ export const Articles = () => {
                              style={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
                             {
                                 page > 1 &&
-                                <button className="btn btn-primary text-uppercase" onClick={()=>{getArticles(page-1)}}>← Newer Posts</button>
+                                <button className="btn btn-primary text-uppercase" onClick={() => {
+                                    getArticles(page - 1)
+                                }}>← Newer Posts</button>
+                            }
+                            {/*buttons with number based on pagenumber*/}
+                            {
+                                [...Array(pageNumber).keys()].map((number, index) => {
+                                        return (
+                                            <button key={index} className="btn btn-primary text-uppercase"
+                                                    onClick={() => {
+                                                        getArticles(number + 1)
+                                                    }}>{number + 1}</button>
+                                        )
+                                    }
+                                )
                             }
                             {
                                 page < pageNumber &&
-                                <button className="btn btn-primary text-uppercase" onClick={()=>{getArticles(page+1)}}>Older Posts →</button>
+                                <button className="btn btn-primary text-uppercase" onClick={() => {
+                                    getArticles(page + 1)
+                                }}>Older Posts →</button>
                             }
                         </div>
                         <br/>
