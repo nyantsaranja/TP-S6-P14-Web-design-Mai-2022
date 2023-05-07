@@ -33,9 +33,9 @@ public class Config {
                         (auhtz) ->
                                 auhtz
                                         .requestMatchers(HttpMethod.POST,"/author/login").permitAll()
-                                        .requestMatchers(HttpMethod.GET, "/article","/article/{id}").permitAll()
+                                        .requestMatchers(HttpMethod.GET, "/article","/article/{id}","/author").permitAll()
                                         .requestMatchers(HttpMethod.POST, "/author","/article").hasAuthority("ROLE_USER")
-                                        .requestMatchers(HttpMethod.GET, "/author","/author/{id}").hasAuthority("ROLE_USER")
+                                        .requestMatchers(HttpMethod.GET, "/author/{id}").hasAuthority("ROLE_USER")
                                         .requestMatchers(HttpMethod.PUT, "/author/{id}","/article/{id}").hasAuthority("ROLE_USER")
                                         .requestMatchers(HttpMethod.DELETE, "/author/{id}","/article/{id}").hasAuthority("ROLE_USER")
                 ).httpBasic();
