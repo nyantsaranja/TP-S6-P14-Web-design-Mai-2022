@@ -4,21 +4,33 @@ import {BASE_URL, CONFIG} from "../service/Api-Call";
 import {formatDate2} from "../service/Utility";
 import {Header} from "./Header";
 import Swal from "sweetalert2";
+import {Pagination} from "../childcomponents/Pagination";
+import {Search} from "../childcomponents/Search";
 
 export const Articles = () => {
     const [articles, setArticles] = useState([]);
+    const [page, setPage] = useState(1);
+    const [pageNumber, setPageNumber] = useState(1);
+    const [searchQuery, setSearchQuery] = useState("");
     document.getElementById("metadescription").content = "AI blog articles"
     useEffect(() => {
-            axios.get(`${BASE_URL}/article`).then((response) => {
-                    console.log(response.data);
-                    setArticles(response.data.data.elements);
-                }
-            ).catch((error) => {
-                    console.log(error);
-                }
-            );
+            getArticles(page, searchQuery);
         }
         , []);
+
+    function getArticles(page, sQ) {
+        axios.get(`${BASE_URL}/article?page=${page}` + sQ).then((response) => {
+                console.log(response.data);
+                setPageNumber(Math.ceil(response.data.data.count / response.data.data.pageSize));
+                setPage(response.data.data.page)
+                setSearchQuery(sQ)
+                setArticles(response.data.data.elements);
+            }
+        ).catch((error) => {
+                console.log(error);
+            }
+        );
+    }
 
     function deleteArticle(id) {
         // add swall confirmation
@@ -67,6 +79,7 @@ export const Articles = () => {
 
             <div className="card">
                 <div className="card-body">
+                    <Search search={getArticles} page={page}/>
                     <div className="table-responsive">
                         <table className="table table-sm">
                             <thead>
@@ -100,6 +113,9 @@ export const Articles = () => {
                             }
                             </tbody>
                         </table>
+                    </div>
+                    <div style={{width: "100%", display: "flex", alignItems: "center", justifyContent: "center"}}>
+                        <Pagination event={getArticles} page={page} pageNumber={pageNumber} searchQuery={searchQuery}/>
                     </div>
                 </div>
             </div>
