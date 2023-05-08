@@ -1,7 +1,4 @@
-import {useEffect, useRef, useState} from "react";
-import axios from "axios";
-import {BASE_URL} from "../../service/Api-Call";
-
+import {useRef} from "react";
 export const SearchForm = ({search,page}) => {
     // const [authors, setAuthors] = useState([]);
     const titleRef = useRef(null);
@@ -81,7 +78,7 @@ export const SearchForm = ({search,page}) => {
                 {/*    button search*/}
                 <div className="row">
                     <div className="col-md-12 mb-3">
-                        <button type="button" className="btn btn-primary" onClick={s}>Search</button>
+                        <button type="button" className="btn btn-dark" onClick={s}>Search</button>
                     </div>
                 </div>
             </div>

@@ -1,5 +1,3 @@
-import logo from './logo.svg';
-import './App.css';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {Articles} from "./components/mother/Articles";
 import {Article} from "./components/mother/Article";

@@ -22,6 +22,7 @@ export const Articles = () => {
                 setPage(response.data.data.page)
                 setSearchQuery(sQ)
                 setArticles(response.data.data.elements);
+                sessionStorage.setItem("articles",JSON.stringify(response.data.data.elements))
             }
         ).catch((error) => {
                 console.log(error);
@@ -60,20 +61,20 @@ export const Articles = () => {
                                 pageNumber> 1 ?
                                 [...Array(pageNumber).keys()].map((number, index) => {
                                         return (
-                                            <button key={index} className="btn btn-primary text-uppercase"
+                                            <button key={index} className="btn btn-dark text-uppercase"
                                                     onClick={() => {
                                                         getArticles(number + 1,searchQuery)
                                                     }}>{number + 1}</button>
                                         )
                                     }
-                                ): <button className="btn btn-primary text-uppercase"
+                                ): <button className="btn btn-dark text-uppercase"
                                                     onClick={() => {
                                                         getArticles(1,searchQuery)
                                                     }}>{1}</button>
                             }
                             {
                                 page < pageNumber &&
-                                <button className="btn btn-primary text-uppercase" onClick={() => {
+                                <button className="btn btn-dark text-uppercase" onClick={() => {
                                     getArticles(page + 1,searchQuery)
                                 }}>Older Posts →</button>
                             }

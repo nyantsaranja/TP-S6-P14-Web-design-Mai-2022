@@ -51,9 +51,10 @@ export const AddArticle = () => {
     };
 
     const fileUploadHandler = async () => {
-        const clientId = "0ec9d7b36980fb5", auth = "Client-ID " + clientId;
-        const formData = new FormData();
-        formData.append('file', selectedFile);
+        document.getElementById("saveButton").disabled = true;
+        let headers = new Headers();
+        headers.append("Authorization", "Client-ID 0ec9d7b36980fb5")
+        let formData = new FormData();
         // create canvas element
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -78,55 +79,59 @@ export const AddArticle = () => {
             ctx.drawImage(img, 0, 0, width, height, 0, 0, width, height);
 
             // get the Base64-encoded string of the canvas image with maximum quality
-            // const bs64 = canvas.toDataURL('image/jpeg', 0.7);
+            let bs64 = canvas.toDataURL('image/jpeg', 0.5);
+            // get image size and reduce it if more than 500kb
+            let size = bs64.length * 3 / 4 / 1024 / 1024;
+            if (size > 0.5) {
+                let quality = 0.5 / size;
+                bs64 = canvas.toDataURL('image/jpeg', quality);
+            }
+            let removePrefix = bs64.split(",")[1];
+            formData.append("image", removePrefix);
 
-            axios.post('https://api.imgur.com/3/image', formData, {
-                    headers: {
-                        'Authorization': auth,
-                        'Accept': 'application/json'
+
+            fetch("https://api.imgur.com/3/image", {
+                method: "post",
+                headers: headers,
+                body: formData,
+                redirect: "follow"
+            }).then((response) => {
+                return response.json();
+            }).then((data) => {
+                console.log(data);
+                const article = {
+                    summary: summaryRef.current.value,
+                    title: titleRef.current.value,
+                    subtitle: subtitleRef.current.value,
+                    content: ckData,
+                    image: data.data.link,
+                    author: {
+                        id: getAuthorId()
+                    },
+                    publicationDate: new Date()
+                }
+                axios.post(`${BASE_URL}/article`, article, CONFIG).then((response) => {
+                        console.log(response.data);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'Data saved successfully'
+                        })
+                        summaryRef.current.value = '';
+                        titleRef.current.value = '';
+                        setCkData('');
+                        subtitleRef.current.value = '';
+                        setPreviewImage(null);
+                        document.getElementById("image").value = null;
                     }
-                }
-            ).then((response) => {
-                    console.log(response);
-                    console.log(response.data.data.link);
-                }
-            ).catch((error) => {
-                    console.log(error);
-                }
-            );
+                ).catch((error) => {
+                        alert(error.response.data.message);
+                    }
+                );
+            }).catch((error) => {
+                console.log(error);
+            })
         }
-
-        // console.log(base64);
-        //     const article = {
-        //         summary: summaryRef.current.value,
-        //         title: titleRef.current.value,
-        //         subtitle: subtitleRef.current.value,
-        //         content: ckData,
-        //         image: bs64,
-        //         author: {
-        //             id: getAuthorId()
-        //         },
-        //         publicationDate: new Date()
-        //     }
-        //     console.log(article);
-        //     axios.post(`${BASE_URL}/article`, article, CONFIG).then((response) => {
-        //             console.log(response.data);
-        //             Swal.fire({
-        //                 icon: 'success',
-        //                 title: 'Success',
-        //                 text: 'Data saved successfully'
-        //             })
-        //             summaryRef.current.value = '';
-        //             titleRef.current.value = '';
-        //             setCkData('');
-        //             subtitleRef.current.value = '';
-        //             setPreviewImage(null);
-        //             document.getElementById("image").value = null;
-        //         }
-        //     ).catch((error) => {
-        //             alert(error.response.data.message);
-        //         }
-        //     );
         img.src = previewImage;
 
     };
@@ -189,7 +194,7 @@ export const AddArticle = () => {
                             </div>
                         </div>
 
-                        <button onClick={fileUploadHandler} type="button" className="btn btn-primary">Save</button>
+                        <button onClick={fileUploadHandler} id="saveButton" type="button" className="btn btn-primary">Save</button>
                     </form>
                 </div>
             </div>

@@ -74,7 +74,7 @@ export const Login = () => {
                                 </label>
 
                                 <input ref={emailRef} type="email" className="form-control"
-                                       placeholder="name@address.com"
+                                       placeholder="name@address.com" defaultValue="ranja@gmail.com"
                                 />
 
                             </div>
@@ -93,7 +93,7 @@ export const Login = () => {
                                 <div className="input-group input-group-merge">
 
                                     <input ref={passwordRef} className="form-control" type="password"
-                                           placeholder="Enter your password"
+                                           placeholder="Enter your password" defaultValue="ranja"
                                     />
 
                                     <span className="input-group-text">

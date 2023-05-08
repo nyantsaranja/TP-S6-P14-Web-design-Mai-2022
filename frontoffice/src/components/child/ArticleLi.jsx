@@ -1,4 +1,4 @@
-export const ArticleLi = ({slug,id,title,subtitle,publicationDate,content,image,author}) => {
+export const ArticleLi = ({slug,title,subtitle,publicationDate,author}) => {
     return (
         <>
             <div className="post-preview">

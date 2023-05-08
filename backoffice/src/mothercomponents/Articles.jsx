@@ -9,12 +9,12 @@ import {Search} from "../childcomponents/Search";
 
 export const Articles = () => {
     const [articles, setArticles] = useState([]);
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState(2);
     const [pageNumber, setPageNumber] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
     document.getElementById("metadescription").content = "AI blog articles"
     useEffect(() => {
-            getArticles(page, searchQuery);
+            getArticles(2, searchQuery);
         }
         , []);
 

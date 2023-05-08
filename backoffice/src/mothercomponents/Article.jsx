@@ -68,10 +68,13 @@ export const Article = () => {
     };
 
     const fileUploadHandler = async () => {
+        document.getElementById("saveButton").disabled = true;
         // create canvas element
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
-
+        let headers = new Headers();
+        headers.append("Authorization", "Client-ID 0ec9d7b36980fb5")
+        let formData = new FormData();
         // create image element
         const img = new Image();
         let bs64 = null;
@@ -92,47 +95,65 @@ export const Article = () => {
             ctx.drawImage(img, 0, 0, width, height, 0, 0, width, height);
 
             // get the Base64-encoded string of the canvas image with maximum quality
-            const bs64 = canvas.toDataURL('image/jpeg', 0.7);
-
-            // console.log(base64);
-            const article = {
-                summary: summaryRef.current.value,
-                title: titleRef.current.value,
-                subtitle: subtitleRef.current.value,
-                content: ckData,
-                image: bs64,
-                author: {
-                    id: getAuthorId()
-                },
-                publicationDate: new Date()
+            let bs64 = canvas.toDataURL('image/jpeg', 0.5);
+            // get image size and reduce it if more than 500kb
+            let size = bs64.length * 3 / 4 / 1024 / 1024;
+            if (size > 0.5) {
+                let quality = 0.5 / size;
+                bs64 = canvas.toDataURL('image/jpeg', quality);
             }
-            console.log(article);
-            axios.put(`${BASE_URL}/article/${paramsArray[paramsArray.length-1]}`, article, CONFIG).then((response) => {
-                    console.log(response.data);
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: 'Data updated successfully'
-                    }).then(() => {
-                        // reload page
-                        window.location.reload();
-                    }
-                    );
-                }
-            ).catch((error) => {
-                    alert(error.response.data.message);
-                }
-            );
-        };
+            let removePrefix = bs64.split(",")[1];
+            formData.append("image", removePrefix);
 
+
+            fetch("https://api.imgur.com/3/image", {
+                method: "post",
+                headers: headers,
+                body: formData,
+                redirect: "follow"
+            }).then((response) => {
+                return response.json();
+            }).then((data) => {
+                console.log(data);
+                const article = {
+                    summary: summaryRef.current.value,
+                    title: titleRef.current.value,
+                    subtitle: subtitleRef.current.value,
+                    content: ckData,
+                    image: data.data.link,
+                    author: {
+                        id: getAuthorId()
+                    },
+                    publicationDate: new Date()
+                }
+                axios.put(`${BASE_URL}/article/${paramsArray[paramsArray.length - 1]}`, article, CONFIG).then((response) => {
+                        console.log(response.data);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'Data updated successfully'
+                        }).then(() => {
+                                // reload page
+                                window.location.reload();
+                            }
+                        );
+                    }
+                ).catch((error) => {
+                        alert(error.response.data.message);
+                    }
+                );
+            }).catch((error) => {
+                console.log(error);
+            })
+        };
         // set image source to preview image
         img.src = previewImage;
     };
 
     return (
         <>
-            <Header pagename={paramsArray.slice(0,paramsArray.length-1).reduce((acc,curr)=>{
-                return acc+" "+curr;
+            <Header pagename={paramsArray.slice(0, paramsArray.length - 1).reduce((acc, curr) => {
+                return acc + " " + curr;
             })}/>
             <div className="card">
                 <div className="card-body">
@@ -190,7 +211,7 @@ export const Article = () => {
                             </div>
                         </div>
 
-                        <button onClick={fileUploadHandler} type="button" className="btn btn-primary">Save</button>
+                        <button onClick={fileUploadHandler} id="saveButton" type="button" className="btn btn-primary">Save</button>
                     </form>
                 </div>
             </div>
