@@ -9,7 +9,7 @@ import {Search} from "../childcomponents/Search";
 
 export const Articles = () => {
     const [articles, setArticles] = useState([]);
-    const [page, setPage] = useState(2);
+    const [page, setPage] = useState(1);
     const [pageNumber, setPageNumber] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
     document.getElementById("metadescription").content = "AI blog articles"
@@ -19,7 +19,7 @@ export const Articles = () => {
         , []);
 
     function getArticles(page, sQ) {
-        axios.get(`${BASE_URL}/article?page=${page}` + sQ).then((response) => {
+        axios.get(`${BASE_URL}/article?page=${page}` + sQ+"&order=id,1").then((response) => {
                 console.log(response.data);
                 setPageNumber(Math.ceil(response.data.data.count / response.data.data.pageSize));
                 setPage(response.data.data.page)

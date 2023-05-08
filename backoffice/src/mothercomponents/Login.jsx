@@ -6,6 +6,7 @@ import {BASE_URL} from "../service/Api-Call";
 export const Login = () => {
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
+    document.getElementById("mainTitle").innerHTML = "Login"
 
 
     useEffect(() => {

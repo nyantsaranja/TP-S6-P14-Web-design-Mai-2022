@@ -29,6 +29,7 @@ export const Article = () => {
                     titleRef.current.value = article.title;
                     summaryRef.current.value = article.summary;
                     setPreviewImage(article.image);
+                    document.getElementById("mainTitle").innerHTML = article.title;
                 }
             ).catch((error) => {
                 console.log(error);
@@ -69,6 +70,18 @@ export const Article = () => {
 
     const fileUploadHandler = async () => {
         document.getElementById("saveButton").disabled = true;
+        if(selectedFile===null|| selectedFile===undefined){
+            updateArticle({data:{link:previewImage}})
+            return;
+        }
+        if(titleRef.current.value==="" || titleRef.current.value===undefined){
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Title is required!',
+            })
+            return;
+        }
         // create canvas element
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -114,34 +127,7 @@ export const Article = () => {
             }).then((response) => {
                 return response.json();
             }).then((data) => {
-                console.log(data);
-                const article = {
-                    summary: summaryRef.current.value,
-                    title: titleRef.current.value,
-                    subtitle: subtitleRef.current.value,
-                    content: ckData,
-                    image: data.data.link,
-                    author: {
-                        id: getAuthorId()
-                    },
-                    publicationDate: new Date()
-                }
-                axios.put(`${BASE_URL}/article/${paramsArray[paramsArray.length - 1]}`, article, CONFIG).then((response) => {
-                        console.log(response.data);
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: 'Data updated successfully'
-                        }).then(() => {
-                                // reload page
-                                window.location.reload();
-                            }
-                        );
-                    }
-                ).catch((error) => {
-                        alert(error.response.data.message);
-                    }
-                );
+                updateArticle(data)
             }).catch((error) => {
                 console.log(error);
             })
@@ -150,11 +136,46 @@ export const Article = () => {
         img.src = previewImage;
     };
 
+    const updateArticle = (data) => {
+        console.log(data);
+        const article = {
+            summary: summaryRef.current.value,
+            title: titleRef.current.value,
+            subtitle: subtitleRef.current.value,
+            content: ckData,
+            image: data.data.link,
+            author: {
+                id: getAuthorId()
+            },
+            publicationDate: new Date()
+        }
+        axios.put(`${BASE_URL}/article/${paramsArray[paramsArray.length - 1]}`, article, CONFIG).then((response) => {
+                console.log(response.data);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Data updated successfully'
+                }).then(() => {
+                        // reload page
+                        document.getElementById("saveButton").disabled = false;
+                        window.location.reload();
+                    }
+                );
+            }
+        ).catch((error) => {
+                document.getElementById("saveButton").disabled = false;
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Something went wrong'
+                });
+            }
+        );
+    }
+
     return (
         <>
-            <Header pagename={paramsArray.slice(0, paramsArray.length - 1).reduce((acc, curr) => {
-                return acc + " " + curr;
-            })}/>
+            <Header pagename={titleRef.current.value}/>
             <div className="card">
                 <div className="card-body">
 
@@ -211,7 +232,9 @@ export const Article = () => {
                             </div>
                         </div>
 
-                        <button onClick={fileUploadHandler} id="saveButton" type="button" className="btn btn-primary">Save</button>
+                        <button onClick={fileUploadHandler} id="saveButton" type="button"
+                                className="btn btn-primary">Save
+                        </button>
                     </form>
                 </div>
             </div>

@@ -12,7 +12,7 @@ export const AddArticle = () => {
     const summaryRef = useRef(null);
     const subtitleRef = useRef(null);
     const titleRef = useRef(null);
-    const [selectedFile, setSelectedFile] = useState({});
+    const [selectedFile, setSelectedFile] = useState(null);
     const base64Ref = useRef(null);
     const [previewImage, setPreviewImage] = useState(null);
     document.getElementById("metadescription").content = "Add an Article"
@@ -51,6 +51,24 @@ export const AddArticle = () => {
     };
 
     const fileUploadHandler = async () => {
+        // if no file is selected, return
+        if (selectedFile===null || selectedFile===undefined) {
+            // Swal alert
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please select an image file.',
+            })
+            return;
+        }
+        if(titleRef.current.value==="" || titleRef.current.value===undefined){
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please enter a title.',
+            })
+            return;
+        }
         document.getElementById("saveButton").disabled = true;
         let headers = new Headers();
         headers.append("Authorization", "Client-ID 0ec9d7b36980fb5")
@@ -123,11 +141,18 @@ export const AddArticle = () => {
                         subtitleRef.current.value = '';
                         setPreviewImage(null);
                         document.getElementById("image").value = null;
+                        document.getElementById("saveButton").disabled = false;
                     }
                 ).catch((error) => {
-                        alert(error.response.data.message);
+                        document.getElementById("saveButton").disabled = false;
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: error.response.data.message
+                        })
                     }
                 );
+
             }).catch((error) => {
                 console.log(error);
             })
@@ -194,7 +219,9 @@ export const AddArticle = () => {
                             </div>
                         </div>
 
-                        <button onClick={fileUploadHandler} id="saveButton" type="button" className="btn btn-primary">Save</button>
+                        <button onClick={fileUploadHandler} id="saveButton" type="button"
+                                className="btn btn-primary">Save
+                        </button>
                     </form>
                 </div>
             </div>
