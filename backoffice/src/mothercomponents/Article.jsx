@@ -175,7 +175,7 @@ export const Article = () => {
 
     return (
         <>
-            <Header pagename={titleRef.current.value}/>
+            <Header pagename={titleRef?.current?.value}/>
             <div className="card">
                 <div className="card-body">
 
