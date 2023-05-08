@@ -5,3 +5,4 @@ Lien backoffice:https://serene-sprinkles-706ae6.netlify.app/
   mpd: ranja
 Lien frontoffice:https://tourmaline-conkies-3ca365.netlify.app/
 Sheets avec les scores et optimisations: https://docs.google.com/spreadsheets/d/1JDObutUX8HVYl6ndEi9WJjqTQoj7NXaP-G3JuBSykfk/edit?usp=sharing
+Lien git pour le WS:https://github.com/nyantsaranja/backendBlogAi
