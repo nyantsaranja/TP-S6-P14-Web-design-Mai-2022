@@ -12,7 +12,7 @@ export const AddArticle = () => {
     const summaryRef = useRef(null);
     const subtitleRef = useRef(null);
     const titleRef = useRef(null);
-    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedFile, setSelectedFile] = useState({});
     const base64Ref = useRef(null);
     const [previewImage, setPreviewImage] = useState(null);
     document.getElementById("metadescription").content = "Add an Article"
@@ -20,7 +20,9 @@ export const AddArticle = () => {
     const fileSelectedHandler = event => {
         const file = event.target.files[0];
         if (file && validateFile(file)) {
-            setSelectedFile(file);
+            setSelectedFile({
+                file: file
+            });
             // create preview image
             const reader = new FileReader();
             // resizes the image 200px width while maintaining aspect ratio
@@ -49,6 +51,9 @@ export const AddArticle = () => {
     };
 
     const fileUploadHandler = async () => {
+        const clientId = "0ec9d7b36980fb5", auth = "Client-ID " + clientId;
+        const formData = new FormData();
+        formData.append('file', selectedFile);
         // create canvas element
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -73,45 +78,60 @@ export const AddArticle = () => {
             ctx.drawImage(img, 0, 0, width, height, 0, 0, width, height);
 
             // get the Base64-encoded string of the canvas image with maximum quality
-            const bs64 = canvas.toDataURL('image/jpeg', 0.7);
+            // const bs64 = canvas.toDataURL('image/jpeg', 0.7);
 
-
-            // console.log(base64);
-            const article = {
-                summary: summaryRef.current.value,
-                title: titleRef.current.value,
-                subtitle: subtitleRef.current.value,
-                content: ckData,
-                image: bs64,
-                author: {
-                    id: getAuthorId()
-                },
-                publicationDate: new Date()
-            }
-            console.log(article);
-            axios.post(`${BASE_URL}/article`, article, CONFIG).then((response) => {
-                    console.log(response.data);
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: 'Data saved successfully'
-                    })
-                    summaryRef.current.value = '';
-                    titleRef.current.value = '';
-                    setCkData('');
-                    subtitleRef.current.value = '';
-                    setPreviewImage(null);
-                    document.getElementById("image").value = null;
+            axios.post('https://api.imgur.com/3/image', formData, {
+                    headers: {
+                        'Authorization': auth,
+                        'Accept': 'application/json'
+                    }
+                }
+            ).then((response) => {
+                    console.log(response);
+                    console.log(response.data.data.link);
                 }
             ).catch((error) => {
-                    alert(error.response.data.message);
+                    console.log(error);
                 }
             );
-        };
+        }
 
-        // set image source to preview image
+        // console.log(base64);
+        //     const article = {
+        //         summary: summaryRef.current.value,
+        //         title: titleRef.current.value,
+        //         subtitle: subtitleRef.current.value,
+        //         content: ckData,
+        //         image: bs64,
+        //         author: {
+        //             id: getAuthorId()
+        //         },
+        //         publicationDate: new Date()
+        //     }
+        //     console.log(article);
+        //     axios.post(`${BASE_URL}/article`, article, CONFIG).then((response) => {
+        //             console.log(response.data);
+        //             Swal.fire({
+        //                 icon: 'success',
+        //                 title: 'Success',
+        //                 text: 'Data saved successfully'
+        //             })
+        //             summaryRef.current.value = '';
+        //             titleRef.current.value = '';
+        //             setCkData('');
+        //             subtitleRef.current.value = '';
+        //             setPreviewImage(null);
+        //             document.getElementById("image").value = null;
+        //         }
+        //     ).catch((error) => {
+        //             alert(error.response.data.message);
+        //         }
+        //     );
         img.src = previewImage;
+
     };
+
+    // set image source to preview image
 
     return (
         <>
